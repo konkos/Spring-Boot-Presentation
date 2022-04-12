@@ -37,9 +37,11 @@ public class CourseService {
 
         Course course = byId.get();
 
-        if(!course.getName().equals(updatedCourse.getName()))
+        if(!course.getName().equals(updatedCourse.getName())) {
             course.setName(updatedCourse.getName());
+        }
 
+        courseRepository.save(course);
         return course;
     }
 

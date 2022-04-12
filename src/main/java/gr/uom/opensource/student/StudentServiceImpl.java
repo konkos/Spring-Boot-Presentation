@@ -1,5 +1,8 @@
 package gr.uom.opensource.student;
 
+import gr.uom.opensource.course.Course;
+import gr.uom.opensource.registration.Registration;
+import gr.uom.opensource.registration.RegistrationRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -11,12 +14,14 @@ import java.util.Optional;
 public class StudentServiceImpl implements StudentService{
     private List<Student> students;
 
-//    private StudentRepository studentRepository;
+    private final StudentRepository studentRepository;
+    private final RegistrationRepository registrationRepository;
 
     @Autowired
-    public StudentServiceImpl(StudentRepository studentRepository){
+    public StudentServiceImpl(StudentRepository studentRepository, RegistrationRepository registrationRepository){
+        this.registrationRepository = registrationRepository;
         this.students = new ArrayList<>();
-//        this.studentRepository = studentRepository;
+        this.studentRepository = studentRepository;
     }
 
     public List<Student> getAllStudents(){
@@ -35,6 +40,8 @@ public class StudentServiceImpl implements StudentService{
             add = true;
         }
 
+        studentRepository.save(studentToAdd);
+
         if(add)
             return studentToAdd;
         else
@@ -44,12 +51,12 @@ public class StudentServiceImpl implements StudentService{
     }
 
     public Student getStudentById(int id){
-        for (Student student : students)
-            if(student.getId() == id)
-                return student;
-//        Optional<Student> byId = studentRepository.findById(id); // SELECT * FROM student where student.id=?
-//        return byId.orElse(new Student());
-        return new Student();
+//        for (Student student : students)
+//            if(student.getId() == id)
+//                return student;
+        Optional<Student> byId = studentRepository.findById(id); // SELECT * FROM student where student.id=?
+        return byId.orElse(new Student());
+        //return new Student();
     }
 
     @Override
@@ -87,5 +94,16 @@ public class StudentServiceImpl implements StudentService{
             students.remove(studentToBeDeleted);
 
 //        studentRepository.deleteById(id);
+    }
+
+    @Override
+    public List<Course> getStudentCourses(Integer id) {
+        List<Registration> registrations = registrationRepository.findCoursesByStudent(id);
+        List<Course> courses = new ArrayList<>();
+
+        for (Registration registration : registrations) {
+            courses.add(registration.getCourse());
+        }
+        return courses;
     }
 }

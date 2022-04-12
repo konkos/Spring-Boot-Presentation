@@ -33,8 +33,8 @@ public class CourseController {
         return this.courseService.addCourse(course);
     }
 
-    @PutMapping("/{id}")// PUT localhost:8080/course/32
-    public Course updateCourse(@PathVariable int id, @RequestBody Course updatedCourse){
+    @PutMapping// PUT localhost:8080/course/?id=32
+    public Course updateCourse(@RequestParam int id, @RequestBody Course updatedCourse){
         return courseService.updateCourse(id,updatedCourse);
     }
 
