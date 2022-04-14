@@ -12,7 +12,7 @@ import java.util.Optional;
 
 @Service
 public class StudentServiceImpl implements StudentService{
-    private List<Student> students;
+//    private List<Student> students;
 
     private final StudentRepository studentRepository;
     private final RegistrationRepository registrationRepository;
@@ -20,29 +20,29 @@ public class StudentServiceImpl implements StudentService{
     @Autowired
     public StudentServiceImpl(StudentRepository studentRepository, RegistrationRepository registrationRepository){
         this.registrationRepository = registrationRepository;
-        this.students = new ArrayList<>();
+//        this.students = new ArrayList<>();
         this.studentRepository = studentRepository;
     }
 
     public List<Student> getAllStudents(){
-//        Iterable<Student> all = studentRepository.findAll();
+        List<Student> students = studentRepository.findAll();
 //        List<Student> students = new ArrayList<>();
-//
+
 //        all.forEach(st -> students.add(st));
 
         return students;
     }
 
     public Student addStudent(Student studentToAdd){
-        boolean add = false;
-        if(students.stream().filter(s-> s.getId()==studentToAdd.getId()).findFirst().isEmpty()){
-            this.students.add(studentToAdd);
-            add = true;
-        }
+//        boolean add = false;
+//        if(students.stream().filter(s-> s.getId()==studentToAdd.getId()).findFirst().isEmpty()){
+//            this.students.add(studentToAdd);
+//            add = true;
+//        }
 
-        studentRepository.save(studentToAdd);
+        Student savedStudent = studentRepository.save(studentToAdd);
 
-        if(add)
+        if(savedStudent!=null)
             return studentToAdd;
         else
             return new Student();
@@ -61,14 +61,14 @@ public class StudentServiceImpl implements StudentService{
 
     @Override
     public Student updateStudent(int id, Student updatedStudent) {
-//        Optional<Student> byId = studentRepository.findById(id);
-//
-//        if (byId.isEmpty())
-//            return new Student();
-//
-//        Student student  = byId.get();
+        Optional<Student> byId = studentRepository.findById(id);
 
-        for (Student student : students) {
+        if (byId.isEmpty())
+            return new Student();
+
+        Student student  = byId.get();
+
+        //for (Student student : students) {
             if(student.getId()==id){
                 if(!student.getFirstName().equals(updatedStudent.getFirstName()) && updatedStudent.getFirstName()!=null)
                     student.setFirstName(updatedStudent.getFirstName());
@@ -78,22 +78,22 @@ public class StudentServiceImpl implements StudentService{
 
                 return student;
             }
-        }
+       // }
         return new Student();
     }
 
     @Override
     public void deleteStudent(int id) {
-        Student studentToBeDeleted = null;
-        for(Student student:students){
-            if(student.getId()==id){
-                studentToBeDeleted = student;
-            }
-        }
-        if(studentToBeDeleted!=null)
-            students.remove(studentToBeDeleted);
+//        Student studentToBeDeleted = null;
+//        for(Student student:students){
+//            if(student.getId()==id){
+//                studentToBeDeleted = student;
+//            }
+//        }
+//        if(studentToBeDeleted!=null)
+//            students.remove(studentToBeDeleted);
 
-//        studentRepository.deleteById(id);
+        studentRepository.deleteById(id);
     }
 
     @Override
