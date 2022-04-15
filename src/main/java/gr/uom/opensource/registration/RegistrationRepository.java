@@ -9,4 +9,7 @@ import java.util.List;
 public interface RegistrationRepository extends JpaRepository<Registration, Integer> {
     @Query("select r from Registration r where r.student.id = ?1")
     List<Registration> findCoursesByStudent(@NonNull int student_id);
+
+    @Query("select r from Registration r where r.course.id = ?1")
+    List<Registration> findStudentsByCourse(Integer course_id);
 }
