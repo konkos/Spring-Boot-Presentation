@@ -2,6 +2,7 @@ package gr.uom.opensource.student;
 
 import gr.uom.opensource.course.Course;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -12,10 +13,10 @@ import java.util.List;
 @RequestMapping("/student") //localhost:8080/student/*
 public class StudentController {
 
-    private StudentService studentService;
+    private final StudentService studentService;
 
     @Autowired
-    public StudentController(StudentService studentService){
+    public StudentController(@Qualifier(value = "StudentServiceDB") StudentService studentService){
         //Dependency Injection
         this.studentService = studentService;
     }
