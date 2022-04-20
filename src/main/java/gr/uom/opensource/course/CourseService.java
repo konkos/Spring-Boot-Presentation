@@ -24,11 +24,7 @@ public class CourseService {
 
 
     public List<Course> getAllCourses(){
-        Iterable<Course> all = courseRepository.findAll();
-        List courses = new ArrayList();
-
-        all.forEach(courses::add);
-        return courses;
+        return courseRepository.findAll();
     }
 
     public Course addCourse(Course course){
@@ -63,6 +59,14 @@ public class CourseService {
     public List<Student> getCourseStudents(Integer course_id) {
         List<Registration> registrations = registrationRepository.findStudentsByCourse(course_id);
         List<Student> students = new ArrayList<>();
+
+        if(registrations.size()<1) {
+            try {
+                throw new Exception("NOT FOUND");
+            } catch (Exception e) {
+                throw new RuntimeException(e);
+            }
+        }
 
         for (Registration registration : registrations) {
             students.add(registration.getStudent());
