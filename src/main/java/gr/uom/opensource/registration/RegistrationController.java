@@ -50,4 +50,16 @@ public class RegistrationController {
     public List<Registration> getRegistrations(){
         return registrationRepository.findAll();
     }
+
+    @PutMapping("/grade/{student_id}/{course_id}/{grade}")
+    public Student updateGrade(@PathVariable int student_id, @PathVariable int course_id, @PathVariable double grade){
+        Student studentOptional = studentRepository.findById(student_id).get();
+        Course courseOptional = courseRepository.findById(course_id).get();
+
+        List<Registration> coursesByStudent = registrationRepository.findCoursesByStudent(student_id);
+        Registration registration1 = coursesByStudent.stream().filter(registration -> registration.getCourse().getId() == course_id).findFirst().get();
+        if(grade>0 && grade<=10) registration1.setGrade(grade);
+        registrationRepository.save(registration1);
+        return registration1.getStudent();
+    }
 }
