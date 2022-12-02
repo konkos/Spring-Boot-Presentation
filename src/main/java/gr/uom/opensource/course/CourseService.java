@@ -8,7 +8,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 @Service
 @Transactional
@@ -17,39 +16,33 @@ public class CourseService {
     private final CourseRepository courseRepository;
     private final RegistrationRepository registrationRepository;
 
-    public CourseService(CourseRepository courseRepository, RegistrationRepository registrationRepository){
+    public CourseService(CourseRepository courseRepository, RegistrationRepository registrationRepository) {
         this.courseRepository = courseRepository;
         this.registrationRepository = registrationRepository;
     }
 
 
-    public List<Course> getAllCourses(){
+    public List<Course> getAllCourses() {
         return courseRepository.findAll();
     }
 
-    public Course addCourse(Course course){
+    public Course addCourse(Course course) {
         courseRepository.save(course);
         return course;
     }
 
+    @Transactional
     public Course updateCourse(int id, Course updatedCourse) {
-        Optional<Course> byId = courseRepository.findById(id);
+        Course course = courseRepository.findById(id).orElseThrow(() -> new RuntimeException("Course Not Found"));
 
-        if (byId.isEmpty())
-            return new Course();
-
-        Course course = byId.get();
-
-        if(!course.getName().equals(updatedCourse.getName())) {
-            course.setName(updatedCourse.getName());
-        }
+        course.setName(updatedCourse.getName() != null ? updatedCourse.getName() : course.getName());
 
         courseRepository.save(course);
         return course;
     }
 
     public Course getCourseById(int id) {
-        return courseRepository.findById(id).orElse(new Course());
+        return courseRepository.findById(id).orElseThrow(() -> new RuntimeException("Course Not Found"));
     }
 
     public void deleteCourse(int id) {
@@ -60,13 +53,8 @@ public class CourseService {
         List<Registration> registrations = registrationRepository.findStudentsByCourse(course_id);
         List<Student> students = new ArrayList<>();
 
-        if(registrations.size()<1) {
-            try {
-                throw new Exception("NOT FOUND");
-            } catch (Exception e) {
-                throw new RuntimeException(e);
-            }
-        }
+        if (registrations.isEmpty())
+            throw new RuntimeException("NOT FOUND");
 
         for (Registration registration : registrations) {
             students.add(registration.getStudent());
