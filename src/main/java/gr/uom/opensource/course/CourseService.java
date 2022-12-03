@@ -1,5 +1,6 @@
 package gr.uom.opensource.course;
 
+import gr.uom.opensource.exceptions.CourseNotFoundException;
 import gr.uom.opensource.registration.Registration;
 import gr.uom.opensource.registration.RegistrationRepository;
 import gr.uom.opensource.student.Student;
@@ -33,7 +34,7 @@ public class CourseService {
 
     @Transactional
     public Course updateCourse(int id, Course updatedCourse) {
-        Course course = courseRepository.findById(id).orElseThrow(() -> new RuntimeException("Course Not Found"));
+        Course course = courseRepository.findById(id).orElseThrow(CourseNotFoundException::new);
 
         course.setName(updatedCourse.getName() != null ? updatedCourse.getName() : course.getName());
 
@@ -42,7 +43,7 @@ public class CourseService {
     }
 
     public Course getCourseById(int id) {
-        return courseRepository.findById(id).orElseThrow(() -> new RuntimeException("Course Not Found"));
+        return courseRepository.findById(id).orElseThrow(CourseNotFoundException::new);
     }
 
     public void deleteCourse(int id) {
@@ -54,7 +55,7 @@ public class CourseService {
         List<Student> students = new ArrayList<>();
 
         if (registrations.isEmpty())
-            throw new RuntimeException("NOT FOUND");
+            throw new RuntimeException("Registrations empty");
 
         for (Registration registration : registrations) {
             students.add(registration.getStudent());

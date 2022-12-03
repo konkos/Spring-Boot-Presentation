@@ -1,6 +1,7 @@
 package gr.uom.opensource.student;
 
 import gr.uom.opensource.course.Course;
+import gr.uom.opensource.exceptions.StudentNotFoundException;
 import gr.uom.opensource.registration.Registration;
 import gr.uom.opensource.registration.RegistrationRepository;
 import org.springframework.stereotype.Service;
@@ -46,7 +47,7 @@ public class StudentServiceDB implements StudentService {
     public Student updateStudent(int id, Student updatedStudent) {
         Optional<Student> studentOptional = studentRepository.findById(id);
 
-        Student student = studentOptional.orElseThrow(() -> new RuntimeException("Student Does Not Exist"));
+        Student student = studentOptional.orElseThrow(() -> new StudentNotFoundException());
 
         student.setFirstName(updatedStudent.getFirstName() != null ? updatedStudent.getFirstName() : student.getFirstName());
         student.setLastName(updatedStudent.getLastName() != null ? updatedStudent.getLastName() : student.getLastName());
